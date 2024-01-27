@@ -1,8 +1,6 @@
 import { Client } from "pg";
-
-export interface Env {
-  DB_URL: string;
-}
+import { Env } from "./env";
+import { Payload } from "./payload";
 
 export default {
   async fetch(
@@ -13,17 +11,14 @@ export default {
     const client = new Client(env.DB_URL);
     await client.connect();
 
-    // Get the request properties
-    let payload = await request.json();
-    let ipv4 = request.headers.get("cf-connecting-ip");
-    let ipv6 = request.headers.get("cf-ipcountry");
-    let current_url = request.url;
-    let referring_url = request.headers.get("Referer");
-    let request_time = new Date();
+		const payload = await request.text();
+		const parsed = JSON.parse(payload) as Payload;
+		const ipaddress = parsed.ipaddress;
+		const current_url = parsed.currentUrl;
+		const referring_url = parsed.referringUrl;
 
-    // Create a SQL query to insert the values into the table
-    let sql = `INSERT INTO requests (payload, ipv4, ipv6, current_url, referring_url, request_time) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
-    let values = [payload, ipv4, ipv6, current_url, referring_url, request_time];
+    let sql = `INSERT INTO requests (payload, ipaddress, current_url, referring_url) VALUES ($1, $2, $3, $4) RETURNING *`;
+    let values = [payload, ipaddress, current_url, referring_url];
 
     const db_response = await client.query(sql, values);
 

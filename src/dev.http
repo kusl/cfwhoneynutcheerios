@@ -1,0 +1,26 @@
+If you have some information you would like to store, you can use this
+
+###
+POST https://honeynutcheerios.2w7sp317.workers.dev/
+Content-Type: application/json
+
+{
+  "ipaddress": "192.168.1.1",
+	"country": "usa",
+	"currentUrl": "https://www.google.com",
+	"referringUrl": "https://www.yahoo.com",
+	"data": {
+		"hello": "world"
+	}
+}
+###
+
+
+You can also send an empty request if all you want is a UUID.
+###
+POST https://honeynutcheerios.2w7sp317.workers.dev/
+Content-Type: application/json
+
+{
+}
+###
