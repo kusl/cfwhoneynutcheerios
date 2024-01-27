@@ -1,3 +1,9 @@
+import { Client } from "pg";
+
+export interface Env {
+  DB_URL: string;
+}
+
 export default {
   async fetch(
     request: Request,
