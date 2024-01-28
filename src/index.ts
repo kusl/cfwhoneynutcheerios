@@ -8,6 +8,21 @@ export default {
     env: Env,
     ctx: ExecutionContext
   ): Promise<Response> {
+		const corsHeaders = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
+      "Access-Control-Max-Age": "86400",
+    };
+
+		if (request.method === "OPTIONS") {
+			const optionsResponse = new Response("ok", {
+				headers: {
+					... corsHeaders
+				},
+			});
+			return optionsResponse;
+		}
+
     const client = new Client(env.DB_URL);
     await client.connect();
 
@@ -24,7 +39,10 @@ export default {
 
     // Return the result as JSON
     const resp = new Response(JSON.stringify(db_response.rows), {
-      headers: { "Content-Type": "application/json" },
+      headers: {
+				"Content-Type": "application/json",
+				... corsHeaders
+			},
     });
 
     // Clean up the client
